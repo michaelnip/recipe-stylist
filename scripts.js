@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", 
   function(event) {
+    require("dotenv").config();
     let ingredients = new Set();
     let submitted = true;
     let form = document.getElementById("ingredient-form");
