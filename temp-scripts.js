@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded",
       img.setAttribute("style", "background-color: black;");
       desc.setAttribute("style", "height: 250px; overflow: scroll; background-color: lightgray; opacity: 60%;");
       h3.textContent = "Functionality under maintenance";
-      p.textContent = "I'm sorry, this functionality is currently undergoing some changes to improve the user experience. I expect to be up and running later this week!";
+      p.textContent = "I'm sorry, this functionality is currently undergoing some changes to improve the overall user experience. I expect to be up and running later this week!";
 
       desc.appendChild(h3);
       desc.appendChild(p);
