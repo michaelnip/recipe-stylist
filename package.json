@@ -1,0 +1,17 @@
+{
+  "name": "aws-webpack",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.6.1"
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.4",
+    "webpack": "^2.0.0"
+  }
+}
