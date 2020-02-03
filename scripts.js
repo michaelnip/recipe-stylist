@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded",
       let li = document.createElement("li");
       li.textContent = `${ingredient}`;
       list.appendChild(li);
-      ingredients.add(ingredient.replace(/[^A-Za-z]/g, "").toLowerCase());
+      ingredient = ingredient.replace(/[^A-Za-z]/g, "").toLowerCase();
+      if(ingredient != "")
+        ingredients.add(ingredient);
       submitted = false;
     }
 
@@ -31,8 +33,8 @@ document.addEventListener("DOMContentLoaded",
     }
 
     function submit(event) {
-      syncFetch = async(url) => {
-        let response = await fetch(url, {"method": "GET", "headers": {"x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com", "x-rapidapi-key": process.env.RFN_KEY}});
+      async function syncFetch(url) {
+        let response = await fetch(url, {"method": "GET"});
         let data = await response.json();
         return data;
       }
@@ -44,90 +46,71 @@ document.addEventListener("DOMContentLoaded",
         let h3 = document.createElement("h3");
         let p = document.createElement("p");
 
-        error.setAttribute("style", "margin-bottom: 10px;");
-        img.setAttribute("src", "images/unhappy-face.jpg");
-        img.setAttribute("style", "background-color: black;");
-        desc.setAttribute("style", "height: 250px; overflow: scroll; background-color: lightgray; opacity: 60%;");
+        error.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: 10px; max-width: 70%;");
+        img.setAttribute("src", "images/sad-face.jpg");
+        img.setAttribute("style", "float: left; background-color: black;");
+        desc.setAttribute("style", "height: 200px; background-color: lightgray; opacity: 60%; text-align: left;");
+        h3.setAttribute("style", "font-size: large;");
+        p.setAttribute("style", "font-size: medium;");
         h3.textContent = message;
-        if(message == "No recipes found")
+        if(message == "No recipes available")
           p.textContent = "I'm sorry, I couldn't think of any recipes that fit your list of ingredients. I think it's time to refresh your pantry and hit your local supermarket!";
+        else if(message == "Unrecognized ingredient(s)")
+          p.textContent = "I'm sorry, I didn't recognize one or more of the ingredients that you submitted. Please revise and resubmit your list.";
         else
-          p.textContent = "I'm sorry, recipes are in high demand today. I have to take a break now, but I will be back again tomorrow!";
+          p.textContent = "I'm sorry, recipes are in high demand today. I had to take a break and step out for a coffee. Please resubmit your list in a few minutes.";
 
         desc.appendChild(h3);
         desc.appendChild(p);
         error.appendChild(img);
-        error.appendChild(desc); 
+        error.appendChild(desc);
         grid.appendChild(error); 
       }
 
-      function searchId() {
-        url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=2&ignorePantry=true&ingredients=";
-        ingredients.forEach(ingredient => {
-          if(ingredient != "")
-            url += ingredient + "%252C";
-        });
-        url = url.substring(0, url.length - 5);
-        syncFetch(url)
-          .then(data => {
-            data.forEach(identifier => {
-              identifiers.add(identifier.id);
-            });
-          })
-          .catch(err => {
-            throwError("No recipes found");
-          });
-      }
-
-      function searchRecipe() {
-        identifiers.forEach(identifier => {
-          url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + identifier + "/information";
-          syncFetch(url)
-            .then(data => {
-              let recipe = document.createElement("div");
-              let img = document.createElement("img");
-              let desc = document.createElement("div");
-              let h3 = document.createElement("h3");
-              let p1 = document.createElement("p");
-              let p2 = document.createElement("p");
-
-              recipe.setAttribute("style", "margin-bottom: 10px;");
-              img.setAttribute("src", `${data.image}`);
-              img.setAttribute("alt", " ");
-              desc.setAttribute("style", "height: 250px; overflow: scroll; background-color: lightgray; opacity: 60%;");
-              p2.setAttribute("style", "text-align: right; font-size: small;");
-              h3.textContent = `${data.title}`;
-              p1.textContent = `${data.instructions}`;
-              p2.textContent = "[" + `${data.sourceName}` + "]"; 
-
-              desc.appendChild(h3);
-              desc.appendChild(p1);
-              desc.appendChild(p2);
-              recipe.appendChild(img);
-              recipe.appendChild(desc); 
-              grid.appendChild(recipe);
-            })
-            .catch(err => {
-              throwError("No recipes found");
-            });
-        });
-      }
-
-      syncSearch = async() => {
-        setTimeout(searchRecipe, 1000);
-        await searchId();
-        await searchRecipe();
-      }
-  
       event.preventDefault();
       if(submitted)
         return;
+      submitted = true;
       while(grid.firstChild)
         grid.removeChild(grid.firstChild);
-      let identifiers = new Set();
-      let url = "";
-      syncSearch();
-      submitted = true;
+      if(ingredients.size == 0) {
+        throwError("Unrecognized ingredient(s)");
+        return;
+      }
+      let url = "https://api.edamam.com/search?q=";
+      ingredients.forEach(ingredient => {
+        if(ingredient != "")
+          url += ingredient + "%20";
+      });
+      url = url.substring(0, url.length - 3);
+      url += "&app_id=" + process.env.API_ID + "&app_key=" + process.env.API_KEY;
+      syncFetch(url)
+        .then(data => {
+          if(data.count == 0)
+            throwError("No recipes available");
+          data.hits.forEach(hit => {
+            let recipe = document.createElement("div");
+            let img = document.createElement("img");
+            let a = document.createElement("a");
+
+            recipe.setAttribute("style", "height: 230px; width: 200px; float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 20px; margin-right: 20px");
+            img.setAttribute("src", `${hit.recipe.image}`);
+            img.setAttribute("alt", " ");
+            let label = `${hit.recipe.label}`;
+            if(label.length > 21)
+              label = label.substring(0, 19) + ".."; 
+            a.textContent = label;
+            a.setAttribute("href", `${hit.recipe.url}`);
+            a.setAttribute("target", "_blank");
+
+            recipe.appendChild(img);
+            recipe.appendChild(a); 
+            grid.appendChild(recipe);
+          });
+        })
+        .catch(err => {
+          throwError("API call limit exceeded");
+        });
     }
   }
 )

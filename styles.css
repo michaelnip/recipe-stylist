@@ -3,9 +3,10 @@ body {
   font-size: 100%;
   margin: 0px;
   padding: 0px;
-  background-image: url("images/cooking.gif");
+  color: peru;
+  background-image: url("images/kitchen.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
   background-attachment: fixed;
 }
 
@@ -50,23 +51,29 @@ input {
   outline: none;
   border-style: solid;
   border-width: 1px;
+  border-color: peru;
+}
+
+::placeholder {
+  color: burlywood;
 }
 
 button {
   font-family: monospace;
   font-size: medium;
+  color: peru;
   background: none;
   outline: none;
   border-radius: 10px;
-  border-color: black;
+  border-color: peru;
 }
 
-button:hover {
-  background: lightgray;
+button:hover, a:hover {
+  background: burlywood;
 }
 
-button:active {
-  background: gray;
+button:active, a:active {
+  background: goldenrod;
 }
 
 #ingredient-list {
@@ -81,7 +88,6 @@ button:active {
   font-size: medium;
   margin: 0 auto;
   max-width: 45%;
-  height: 60px;
   text-align: left;
   overflow: scroll;
   border-style: dotted;
@@ -93,43 +99,43 @@ li {
   margin: 5px;
   padding-top: 3px;
   padding-bottom: 3px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
   border-style: hidden;
   border-radius: 10px; 
-  background-color: lightgray;
+  background-color: burlywood;
 }
 
 #recipe-grid {
   margin: auto;
-  max-width: 75%; 
+  max-width: 85%; 
+  display: table;
+  font-family: monospace;
 }
 
 img {
-  height: 250px;
-  width: 250px;
-  float: left;
-  opacity: 60%;
+  height: 200px;
+  width: 200px;
+  opacity: 70%;
+  margin-bottom: 3px;
 }
 
-img[alt] {
-  background-color: black;
+a {
+  margin: 0px;
+  color: peru;
+  text-align: center;
+  text-decoration: none;
+  font-size: medium;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 10px;
+  border-color: peru;
 }
 
 h3, p {
   margin: 0px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 10px;
-  padding-right: 10px;
-  text-align: left;
-  font-family: monospace;
 }
-
-h3 {
- font-size: large;
-}
-
-p {
-  font-size: medium;
-} 
