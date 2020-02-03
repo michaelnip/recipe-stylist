@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded",
 
             recipe.setAttribute("style", "height: 230px; width: 200px; float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 20px; margin-right: 20px");
             img.setAttribute("src", `${hit.recipe.image}`);
-            img.setAttribute("alt", " ");
+            img.setAttribute("alt", "images/cooking.png");
             let label = `${hit.recipe.label}`;
             if(label.length > 21)
               label = label.substring(0, 19) + ".."; 
