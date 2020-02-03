@@ -6,6 +6,9 @@ module.exports = {
     filename: "bundle.js"
   },
   plugins: [
-    new webpack.EnvironmentPlugin({"RFN_KEY": process.env.RFN_KEY})
+    new webpack.EnvironmentPlugin({
+      "API_ID": process.env.API_ID,
+      "API_KEY": process.env.API_KEY 
+    })
   ]
 };
